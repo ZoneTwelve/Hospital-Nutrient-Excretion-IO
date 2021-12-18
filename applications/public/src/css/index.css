@@ -65,10 +65,10 @@ td, th {
 
 #new-columns > .container{
   position: relative;
-  width: 80%;
+  width: 95%;
   max-width: 900px;
   min-height:500px;
-  padding: 50px;
+  padding: 35px;
   background: white;
   border-radius: 10px;
 
@@ -95,6 +95,16 @@ td, th {
     opacity: 1;
   }
 }
+
+.fill-*{
+  transition-duration: 0s;
+}
+
+.ctrl-opts-hide{
+  display: none;
+
+}
+
 
 /* 
   dist: 30 
