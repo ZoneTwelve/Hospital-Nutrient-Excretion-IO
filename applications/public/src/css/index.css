@@ -105,6 +105,9 @@ td, th {
 
 }
 
+.btn-lg{
+  font-size: 1.5rem;
+}
 
 /* 
   dist: 30 
