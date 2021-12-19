@@ -27,6 +27,10 @@ var fillSelectors = {
     ],
 };
 
+const post_action = {
+  'add-record': ( ) => add_record_req
+}
+
 window.onload = function( ){
   let d = new Date( );
   document.querySelector("#date-picker").value = `${d.getFullYear()}-${zeroStuffing(2, d.getMonth())}-${zeroStuffing(2, d.getDate())}`;
@@ -39,6 +43,16 @@ window.onload = function( ){
     console.log( form );
     form.onsubmit = copyFormStatus;
   }
+
+  document.querySelector("#result_form").onsubmit = () => {
+    let form = document.querySelector("#result_form");
+    form['csrfmiddlewaretoken']['value'] = getCookie('csrftoken');
+    // console.log( form['csrfmiddlewaretoken'].value )
+    // form['csrfmiddlewaretoken'].value = getCookie('csrftoken');
+    // console.log( form['csrfmiddlewaretoken'].value )
+    post_request( form );
+    return false;
+  };
 }
 
 function zeroStuffing( len, str ){
@@ -47,7 +61,10 @@ function zeroStuffing( len, str ){
 
 function addNewColumns( ){
   let d = new Date();
-  document.querySelector("#timing").value = `${zeroStuffing(2, d.getHours())}:${zeroStuffing(2, d.getMinutes())}`;
+  let dc = `${d.getFullYear()}-${zeroStuffing(2, d.getMonth())}-${zeroStuffing(2, d.getDate())} ${zeroStuffing(2, d.getHours())}:${zeroStuffing(2, d.getMinutes())}`;
+  document.querySelector("#timing").value = dc;
+  document.querySelector("#timing").onchange = function(){ document.querySelector("#update_date").value = this.value }
+  document.querySelector("#timing").onchange();
   document.querySelector("#new-columns").classList.remove("new-columns-hide");
   document.querySelector("#new-columns").classList.add("new-columns-show");
 }
@@ -75,7 +92,7 @@ function applyFillSelector( label ){
   }
 }
 
-function showActiveOption( ){
+function showActiveOption( ){ 
   let opts = document.querySelectorAll(".ctrl-opts");
 
   for(let opt of opts){
@@ -102,8 +119,9 @@ function copyFormStatus( ){
         result.push( el[index].innerText );
       break;
       case /_cap/.test( el.name ):
+        console.log( el )
         if( el.value != "" )
-          result.push( `量：${el.value} ${el.unit||""}` );
+          result.push( `量：${el.value} ${el.dataset.unit||""}` );
       break;
       case /_state/.test( el.name ):
         if( el.value!="" )
@@ -113,9 +131,15 @@ function copyFormStatus( ){
     // result.push( el.value );
   }
   document.querySelector(`#result-${this.name}`).innerText = result.filter(v=>v.toString()!="").join(',');
+  document.querySelector("#new-option").value = '';
+  document.querySelector("#new-option").onchange();
   return false;
 }
 
 function submitResult( ){
   return false;
+}
+
+function add_record_req( ){
+  alert("OK");
 }

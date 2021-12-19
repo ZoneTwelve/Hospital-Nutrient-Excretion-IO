@@ -17,18 +17,20 @@ class Pee_opt( models.Model ):
 class NE_Record( models.Model ): # Nutrient & Excretion Record
   user_id     = models.IntegerField( default=-1 )
 
-  food        = models.IntegerField( ) # Ref Foods.id
-  food_cap    = models.IntegerField( )
-  food_state  = models.TextField( default='' )
+  food_opt    = models.IntegerField( default=-1 ) # Ref Foods.id
+  food_cap    = models.IntegerField( default=-1 )
+  food_state  = models.TextField( default='', blank=True )
   
-  water_cap   = models.IntegerField( )
+  water_cap   = models.IntegerField( default=-1 )
    
-  pee         = models.IntegerField( ) # choose
-  pee_cap     = models.IntegerField( default=0 )
-  pee_state   = models.TextField( default='' )
+  pee_opt     = models.IntegerField( default=-1 ) # choose
+  pee_cap     = models.IntegerField( default=-1 )
+  pee_state   = models.TextField( default='', blank=True )
 
-  poop        = models.IntegerField( ) # choose
-  poop_state  = models.TextField( default='' )
+  poop_opt    = models.IntegerField( default=-1 ) # choose
+  poop_state  = models.TextField( default='', blank=True )
   
-  edit_date   = models.DateField( auto_now=True )
-  update_date = models.DateField( auto_now_add=True )
+  insert_date = models.DateTimeField( auto_now_add=True )
+  update_date = models.DateTimeField( default=None )
+  # edit_date   = models.DateField( auto_now=True )
+  # update_date = models.DateField( auto_now_add=True )
