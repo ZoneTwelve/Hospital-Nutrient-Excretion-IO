@@ -4,8 +4,8 @@ from django.db import models
 
 class Foods_opt( models.Model ):
   name        = models.TextField( blank=False, default="" )
-  fullname    = models.TextField( blank=False, default="" )
-  source      = models.TextField( default="" )
+  fullname    = models.TextField( blank=True,  default="" )
+  source      = models.TextField( blank=True,  default="" )
   user        = models.IntegerField( default=-1 )
 
 class Poop_opt( models.Model ):

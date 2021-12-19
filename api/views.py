@@ -1,3 +1,4 @@
+from json.encoder import JSONEncoder
 from django.http.response import HttpResponse, JsonResponse
 from django.core import serializers
 from django.shortcuts import render
@@ -17,11 +18,13 @@ def NE_Record_search( request, year, month, day ):
   return HttpResponse( serializers.serialize("json", res), content_type="application/json" )
 
 def NE_Record_REQ( request ):
-  method = request.POST.get("method", request.method)
+  method = request.POST.get("method") or request.method
   if   method == 'GET':
     return NE_Record_GET( request )
   elif method == 'POST':
     return NE_Record_POST( request )
+  else:
+    return JsonResponse({'error':'method not found'})
 
 def NE_Record_GET( request ):
   today = date.today( )
@@ -37,14 +40,21 @@ def NE_Record_POST( request ):
   food_cap    = request.POST.get('food_cap')      or -1
   food_state  = request.POST.get('food_state')    or ''
 
-  water_cap   = request.POST.get('water_cap', -1) or -1
+  water_cap   = request.POST.get('water_cap')     or -1
 
-  pee_opt     = request.POST.get('pee_opt', -1)   or -1
-  pee_cap     = request.POST.get('pee_cap', -1)   or -1
-  pee_state   = request.POST.get('pee_state', '') or ''
+  pee_opt     = request.POST.get('pee_opt')       or -1
+  pee_cap     = request.POST.get('pee_cap')       or -1
+  pee_state   = request.POST.get('pee_state')     or ''
 
-  poop_opt    = request.POST.get('poop_opt', -1)  or -1
-  poop_state  = request.POST.get('poop_opt', -1)  or ''
+  poop_opt    = request.POST.get('poop_opt')      or -1
+  poop_state  = request.POST.get('poop_state')    or ''
+
+  print("-"*10)
+  print( food_opt, food_cap, food_state )
+  print( water_cap )
+  print( pee_opt, pee_cap, pee_state )
+  print( poop_opt, poop_state )
+  print("-"*10)
 
   update_date = request.POST.get('update_date', datetime.now().strftime("%Y-%m-%d %h:%M"))
 
@@ -55,5 +65,5 @@ def NE_Record_POST( request ):
     poop_opt=poop_opt, poop_state=poop_state,
     update_date=update_date,
   )
-  # print( update_date )
+  print( update_date )
   return JsonResponse({'message':'POST'})
