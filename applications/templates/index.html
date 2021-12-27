@@ -14,6 +14,11 @@
 <body>
   <nav class="navbar navbar-light bg-light">
     <span class="lead navbar-text p-3">病人輸入輸出紀錄表</span>
+    <form name="logout" method="POST" action="/api/v1/user/session" onsubmit="return confirm('要登出嗎？');">
+      {% csrf_token %}
+      <input type="hidden" name="method" value="DELETE">
+      <button type="submit" class="btn btn-outline-danger m-3 mt-0 mb-0">登出</button>
+    </form>
   </nav>
 
   <div class="container pt-5">
@@ -31,49 +36,8 @@
                 <th>大便</th>
               </thead>
               <tbody>
-                <tr>
-                  <th class="fix">10:31</th>
-                  <td>醫院營養餐點</td>
-                  <td>120 cc</td>
-                  <td>300 cc</td>
-                  <td>正常</td>
-                </tr>
-                <tr>
-                  <th class="fix">11:52</th>
-                  <td>
-                    <span>醫院營養餐點</span>
-                    <span>Normal</span>
-                  </td>
-                  <td>120 cc</td>
-                  <td>300 cc</td>
-                  <td>正常</td>
-                </tr>
-                <tr>
-                  <th scope="row" class="fix">12:39</th>
-                  <td>醫院營養餐點</td>
-                  <td>120 cc</td>
-                  <td>300 cc</td>
-                  <td>正常</td>
-                </tr>
-                <tr>
-                  <th scope="row" class="fix">*</th>
-                  <td colspan="4" class="text-center">至此行結束</td>
-                </tr>
               </tbody>
             </table>
-            <!-- <table class="table table-hover">
-              <tr>
-                <form action="">
-                  <th class="fix">
-                    <input autocomplete="off"  type="submit" value="新增 13:22" class="p-1 btn btn-outline-success">
-                  </th>
-                  <td>稀飯</td>
-                  <td>0 cc</td>
-                  <td>0 cc</td>
-                  <td>無</td>
-                </form>
-              </tr>
-            </table> -->
           </div>
           <div id="add-btn" class="lead fw-bold mt-3 add-btn d-flex justify-content-center">+</div>
         </div>
@@ -217,7 +181,7 @@
               <input autocomplete="off"  type="hidden" name="poop_state" id="">
               <p><strong>排泄：</strong><span class="result-content" id="result-poop">暫無填寫</span></p>
 
-              <input autocomplete="off"  type="submit" value="新增" class="btn btn-outline-success">
+              <input autocomplete="off"  type="submit" value="新增" disabled class="btn btn-outline-success">
             </form>
           </div>
         </div>

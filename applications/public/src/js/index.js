@@ -27,7 +27,8 @@ var fillSelectors = {
 };
 
 const post_action = {
-  'add-record': ( ) => add_record_req
+  'add-record': ( ) => add_record_req,
+  'logout': logout,
 }
 
 window.onload = function( ){
@@ -49,6 +50,8 @@ window.onload = function( ){
   }
 
   document.querySelector("#result_form").onsubmit = () => {
+    if( !confirm("新增後無法修改，確定要新增嗎？") )
+      return false;
     let form = document.querySelector("#result_form");
     form['csrfmiddlewaretoken']['value'] = getCookie('csrftoken');
     post_request( form );
@@ -62,6 +65,11 @@ window.onload = function( ){
     document.querySelector("#date-picker").onchange( );
     return false;
   };
+  document.querySelector("form[name='logout']").onsubmit = ( self ) => {
+    post_request( document.querySelector("form[name='logout']") );
+    return false;
+  };
+
 }
 
 function loadColumns( Y, m, d ){
@@ -195,6 +203,7 @@ function copyFormStatus( ){
   document.querySelector(`#result-${this.name}`).innerText = result.filter(v=>v.toString()!="").join(',');
   document.querySelector("#new-option").value = '';
   document.querySelector("#new-option").onchange();
+  document.querySelector("#result_form > [type='submit']").disabled = false;
   return false;
 }
 
@@ -204,4 +213,32 @@ function submitResult( ){
 
 function add_record_req( ){
   alert("OK");
+}
+
+// function post_request( form ){
+//   let parame = document.querySelectorAll("form [name]");
+//   if( this.tagName != "FORM" && form.tagName !="FORM" )
+//     return alert("Can not found the form");
+//   let postForm = this || form;
+//   formData = new FormData(postForm);
+
+//   fetch('/api/v1/user/session', {
+//     method:"POST",
+//     cache: 'no-cache',
+//     credentials: 'same-origin',
+//     headers:{
+//       'User-Agent':navigator.userAgent,
+//       // 'Content-Type':'application/json',
+//     },
+//     body: formData,
+//   }).then( res => res.json()).then( json => {
+//     (post_action[postForm['name']] || function(){console.log("Can not found this action")} )( json );
+//   } );
+//   return false;
+// }
+
+function logout( json ){
+  if( json && json['message'] == "OK" )
+    return location.reload( );
+  alert( json['error'] )
 }

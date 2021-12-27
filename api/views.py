@@ -3,21 +3,55 @@ from django.http.response import HttpResponse, JsonResponse
 from django.core import serializers
 from django.shortcuts import render
 from django.http import JsonResponse
+
+from django.contrib import auth
 # from models import NE_Record, Foods_opt, Poop_opt, Pee_opt
 from api.models import NE_Record, Foods_opt, Poop_opt, Pee_opt
 from datetime import date, datetime, timedelta
 
+## Global information
+GLOBAL_RESPONSE_TEST = { 'message': 'Testing is OK' }
+GLOBAL_OK            = { 'message': 'OK' }
+
 def home( request ):
   return JsonResponse({'message':"hello"})
+
+
+def user_session( request ):
+  redirect2index = {'message': 'Redirect', 'url': '/'} #, 'Authorization': True }
+  method = request.POST.get('method', 'GET')
+  if method == "GET":
+    return JsonResponse( redirect2index if request.user.is_authenticated else { 'error': 'Unauthorized' }, safe=False )
+
+  if method == "POST":
+    if request.user.is_authenticated:
+      return JsonResponse( redirect2index )
+    username = request.POST.get('username', '')
+    password = request.POST.get('password', '')
+    user = auth.authenticate( username=username, password=password )
+    if user is not None and user.is_active:
+      auth.login( request, user )
+      return JsonResponse( GLOBAL_OK )
+    else:
+      return render( request, 'login.html', locals() )
+
+  if method == "DELETE":
+    auth.logout( request )
+    return JsonResponse( GLOBAL_OK )
+
+  return JsonResponse( {'message': 'unknow activity'} )
 
 def NE_Record_search( request, year, month, day ):
   print( year, month, day )
   today = datetime.strptime( "%s-%s-%s" % (year, month, day), '%Y-%m-%d' )
   print( today )
-  res = NE_Record.objects.filter(update_date__range=[today, today + timedelta(days=1)])
+  res = NE_Record.objects.filter(update_date__range=[today, today + timedelta(days=1)], user_id=request.user.id)
   return HttpResponse( serializers.serialize("json", res), content_type="application/json" )
 
 def NE_Record_REQ( request ):
+  if not request.user.is_authenticated:
+    return render( request, 'login.html' )
+
   method = request.POST.get("method") or request.method
   if   method == 'GET':
     return NE_Record_GET( request )
@@ -64,6 +98,7 @@ def NE_Record_POST( request ):
     pee_opt=pee_opt, pee_cap=pee_cap, pee_state=pee_state, 
     poop_opt=poop_opt, poop_state=poop_state,
     update_date=update_date,
+    user_id=request.user.id
   )
   print( update_date )
   return JsonResponse({'message':'POST'})

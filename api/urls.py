@@ -22,5 +22,6 @@ from django.urls import path
 urlpatterns = [
   path('', views.home),
   path('record', views.NE_Record_REQ),
+  path('user/session', views.user_session),
   re_path(r'^record/(?P<year>[0-9]{4})/(?P<month>[0-9]{2})/(?P<day>[0-9]{2})/$', views.NE_Record_search),
 ]
