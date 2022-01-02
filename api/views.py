@@ -33,7 +33,8 @@ def user_session( request ):
       auth.login( request, user )
       return JsonResponse( GLOBAL_OK )
     else:
-      return render( request, 'login.html', locals() )
+      return JsonResponse( {'error':'authorization failed'} )
+      # return render( request, 'login.html', locals() 
 
   if method == "DELETE":
     auth.logout( request )
@@ -49,10 +50,13 @@ def NE_Record_search( request, year, month, day ):
   return HttpResponse( serializers.serialize("json", res), content_type="application/json" )
 
 def NE_Record_REQ( request ):
+  
+  method = request.POST.get("method") or request.method
+  print( method )
+
   if not request.user.is_authenticated:
     return render( request, 'login.html' )
 
-  method = request.POST.get("method") or request.method
   if   method == 'GET':
     return NE_Record_GET( request )
   elif method == 'POST':

@@ -32,14 +32,14 @@
   function windowResized() {
     let root = document.querySelector("#display-frame");
     resizeCanvas(root.offsetWidth, root.offsetHeight - 6);
-    particles = [];
-    for( let i = 0 ; i < 30 ; i++ ){
-      let size = particleSize;
-      let pos = createVector( ~~(Math.random() * width), ~~(Math.random() * height ) ); // position
-      let dir = createVector( (pos.x > width/2 ? -1 : 1)*(Math.random()*0.3+0.2), (pos.y > height/2 ? -1 : 1)*(Math.random()*0.3+0.2) );
-      let p = new Particle( {pos, dir, size} );
-      particles.push( p );
-    }
+    // particles = [];
+    // for( let i = 0 ; i < 30 ; i++ ){
+    //   let size = particleSize;
+    //   let pos = createVector( ~~(Math.random() * width), ~~(Math.random() * height ) ); // position
+    //   let dir = createVector( (pos.x > width/2 ? -1 : 1)*(Math.random()*0.3+0.2), (pos.y > height/2 ? -1 : 1)*(Math.random()*0.3+0.2) );
+    //   let p = new Particle( {pos, dir, size} );
+    //   particles.push( p );
+    // }
   }
 
   function newParticle( ){
@@ -117,6 +117,10 @@
   }
   </script> 
   <style>
+    #display-frame, #login-frame{
+      overflow: hidden;
+      transition-duration: 2s;
+    }
     #main-frame{
       margin:0px auto;
       width:100%;
@@ -129,6 +133,9 @@
       padding:0px;
       background:radial-gradient(circle farthest-corner at left, #4C13C2, #1833C3);
       opacity: 0.7;
+      position: absolute;
+      top:0px;
+      left:0px;
     }
     #login-frame{
       opacity: 0.9;
@@ -137,9 +144,28 @@
       display: flex;
       justify-items: center;
       align-items: center;
+      z-index: 2;
+      opacity: 0.75;
     }
     form > div.form-group{
       padding-top:20px;
+    }
+    .bottom-btn{
+      display: none;
+    }
+    
+    @media (min-width: 768px){
+      #display-frame{
+        position: relative;
+        /* top: 0px;
+        left:0px; */
+        /* z-index: 1; */
+        opacity: 0.8;
+      }
+      #login-frame{
+        opacity: 1;
+        /* z-index: 2; */
+      }
     }
   </style>
   <script>
@@ -173,21 +199,24 @@
     function login( json ){
       if( json && json['message'] == "OK" )
         location.reload( );
+      else if( json && json['error'] )
+        return alert( json['error'] );
+      return alert("Other error " + JSON.stringify( json ));
     }
   </script>
 </head>
 <body>
   <div id="main-frame" class="row">
-    <div id="login-frame" class="frame col-3">
+    <div id="login-frame" class="frame col-12 col-md-4 col-lg-3">
       <div class="container">
-        <h1>Z12 醫院</h1>
+        <h1>Twelve Hospital</h1>
         <hr>
         <form name="login" action="/api/v1/user/session" method="POST" onsubmit="return alert('JS is not loaded')&&false;">
           {% csrf_token %}
           <input type="hidden" name="method" value="POST">
           <div class="form-group">
             <label for="account">Account</label>
-            <input type="text" class="form-control" id="account" name="username" placeholder="username@Nexus.io">
+            <input type="text" class="form-control" id="account" name="username" placeholder="username@hospital.io">
           </div>
           <div class="form-group">
             <label for="password">Password</label>
@@ -199,7 +228,8 @@
         </form>
       </div>
     </div>  
-    <div id="display-frame" class="frame col-9"></div>
+    <div id="display-frame" class="frame col-12 col-md-8 col-lg-9"></div>
+    <!-- <button class="btn btn-outline-primary">﹀</button> -->
   </div>
 </body>
 </html>
