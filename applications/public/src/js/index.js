@@ -63,8 +63,10 @@ window.onload = function( ){
     }
     closeNewColumns( );
     document.querySelector("#date-picker").onchange( );
+    console.log( document.querySelector("#date-picker").onchange );
     return false;
   };
+
   document.querySelector("form[name='logout']").onsubmit = ( self ) => {
     post_request( document.querySelector("form[name='logout']") );
     return false;

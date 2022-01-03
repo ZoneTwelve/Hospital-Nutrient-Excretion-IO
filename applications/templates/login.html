@@ -198,7 +198,7 @@
 
     function login( json ){
       if( json && json['message'] == "OK" )
-        location.reload( );
+        return location.reload( );
       else if( json && json['error'] )
         return alert( json['error'] );
       return alert("Other error " + JSON.stringify( json ));
